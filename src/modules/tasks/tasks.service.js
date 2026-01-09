@@ -1,4 +1,5 @@
 import { pool } from "../../config/db.js";
+import { logInfo } from "../../utils/logger.js";
 import { ensureProjectAccess, parseId } from "../projects/projects.service.js";
 
 const createError = (status, message) => {
@@ -64,7 +65,7 @@ const createTask = async (
     [trimmedTitle, trimmedDescription || null, projectId, 0, user.id]
   );
 
-  console.log(`Task created: ${result.rows[0].id}`);
+  logInfo(`Task created: ${result.rows[0].id}`);
   return result.rows[0];
 };
 
@@ -153,7 +154,7 @@ const updateTaskStatus = async (user, taskIdValue, status) => {
     [status, taskId]
   );
 
-  console.log(`Task updated: ${taskId}`);
+  logInfo(`Task updated: ${taskId}`);
   return result.rows[0];
 };
 
@@ -182,7 +183,7 @@ const deleteTask = async (user, taskIdValue) => {
     throw createError(404, "Task not found");
   }
 
-  console.log(`Task deleted: ${taskId}`);
+  logInfo(`Task deleted: ${taskId}`);
 };
 
 const addTimeEntry = async (user, taskIdValue, minutes) => {
@@ -222,7 +223,7 @@ const addTimeEntry = async (user, taskIdValue, minutes) => {
 
   const totalMinutes = await recalculateTaskTime(taskId);
 
-  console.log(`Task time entry added: ${result.rows[0].id}`);
+  logInfo(`Task time entry added: ${result.rows[0].id}`);
   return { entry: result.rows[0], totalMinutes };
 };
 
@@ -264,7 +265,7 @@ const updateTimeEntry = async (user, entryIdValue, minutes) => {
 
   const totalMinutes = await recalculateTaskTime(entry.task_id);
 
-  console.log(`Task time entry updated: ${entryId}`);
+  logInfo(`Task time entry updated: ${entryId}`);
   return {
     entry: {
       ...result.rows[0],
@@ -304,7 +305,7 @@ const updateTaskDescription = async (user, taskIdValue, description) => {
     [trimmedDescription || null, taskId]
   );
 
-  console.log(`Task description updated: ${taskId}`);
+  logInfo(`Task description updated: ${taskId}`);
   return result.rows[0];
 };
 
@@ -335,7 +336,7 @@ const addTaskItem = async (user, taskIdValue, content) => {
     [taskId, trimmedContent]
   );
 
-  console.log(`Task item added: ${result.rows[0].id}`);
+  logInfo(`Task item added: ${result.rows[0].id}`);
   return result.rows[0];
 };
 
@@ -370,7 +371,7 @@ const updateTaskItem = async (user, itemIdValue, { content, isDone }) => {
     [nextContent, nextDone, itemId]
   );
 
-  console.log(`Task item updated: ${itemId}`);
+  logInfo(`Task item updated: ${itemId}`);
   return result.rows[0];
 };
 
@@ -393,7 +394,7 @@ const deleteTaskItem = async (user, itemIdValue) => {
   await ensureProjectAccess(user, item.project_id);
 
   await pool.query("DELETE FROM task_items WHERE id = $1", [itemId]);
-  console.log(`Task item deleted: ${itemId}`);
+  logInfo(`Task item deleted: ${itemId}`);
 };
 
 export {

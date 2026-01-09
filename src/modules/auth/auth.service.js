@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { pool } from "../../config/db.js";
+import { logInfo } from "../../utils/logger.js";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -59,7 +60,7 @@ const registerUser = async ({ name, email, password }) => {
     [displayName, normalizedEmail, hashedPassword, "USER"]
   );
 
-  console.log(`User registered: ${normalizedEmail}`);
+  logInfo(`User registered: ${normalizedEmail}`);
   return result.rows[0];
 };
 
@@ -93,7 +94,7 @@ const loginUser = async ({ email, password }) => {
     { expiresIn: process.env.JWT_EXPIRES_IN || "1h" }
   );
 
-  console.log(`User login: ${normalizedEmail}`);
+  logInfo(`User login: ${normalizedEmail}`);
   return {
     token,
     user: {

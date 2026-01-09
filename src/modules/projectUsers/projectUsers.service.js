@@ -1,4 +1,5 @@
 import { pool } from "../../config/db.js";
+import { logInfo } from "../../utils/logger.js";
 import { parseId } from "../projects/projects.service.js";
 
 const createError = (status, message) => {
@@ -48,7 +49,7 @@ const assignUserToProject = async (user, projectIdValue, targetUserIdValue) => {
     [projectId, targetUserId]
   );
 
-  console.log(`User ${targetUserId} assigned to project ${projectId}`);
+  logInfo(`User ${targetUserId} assigned to project ${projectId}`);
   return result.rows[0];
 };
 
@@ -78,7 +79,7 @@ const removeUserFromProject = async (
     throw createError(404, "Project assignment not found");
   }
 
-  console.log(`User ${targetUserId} removed from project ${projectId}`);
+  logInfo(`User ${targetUserId} removed from project ${projectId}`);
 };
 
 const listProjectUsers = async (user, projectIdValue) => {

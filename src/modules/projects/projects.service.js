@@ -1,4 +1,5 @@
 import { pool } from "../../config/db.js";
+import { logInfo } from "../../utils/logger.js";
 
 const createError = (status, message) => {
   const error = new Error(message);
@@ -93,7 +94,7 @@ const createProject = async (user, { name }) => {
     [trimmedName, user.id]
   );
 
-  console.log(`Project created: ${result.rows[0].id}`);
+  logInfo(`Project created: ${result.rows[0].id}`);
   return result.rows[0];
 };
 
@@ -146,7 +147,7 @@ const deleteProject = async (user, projectIdValue) => {
     throw createError(404, "Project not found");
   }
 
-  console.log(`Project deleted: ${project.id}`);
+  logInfo(`Project deleted: ${project.id}`);
   return project;
 };
 
