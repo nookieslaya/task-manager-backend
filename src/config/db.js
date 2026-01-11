@@ -3,24 +3,29 @@ import { logError, logInfo } from "../utils/logger.js";
 
 const { Pool } = pg;
 
-const buildConnectionString = () => {
-  if (process.env.DATABASE_URL) {
-    return process.env.DATABASE_URL;
-  }
+const isProduction = process.env.NODE_ENV === "production";
 
+const buildConnectionString = () => {
   const host = process.env.DB_HOST;
   const port = process.env.DB_PORT;
   const database = process.env.DB_NAME;
   const user = process.env.DB_USER;
   const password = process.env.DB_PASSWORD;
+  const hasDbParts = host && port && database && user && password;
 
-  if (!host || !port || !database || !user || !password) {
-    throw new Error(
-      "DATABASE_URL is not set and DB_* variables are incomplete"
-    );
+  if (!isProduction && hasDbParts) {
+    return `postgresql://${user}:${password}@${host}:${port}/${database}`;
   }
 
-  return `postgresql://${user}:${password}@${host}:${port}/${database}`;
+  if (process.env.DATABASE_URL) {
+    return process.env.DATABASE_URL;
+  }
+
+  if (hasDbParts) {
+    return `postgresql://${user}:${password}@${host}:${port}/${database}`;
+  }
+
+  throw new Error("DATABASE_URL is not set and DB_* variables are incomplete");
 };
 
 const connectionString = buildConnectionString();
