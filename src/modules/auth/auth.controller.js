@@ -2,8 +2,8 @@ import { registerUser, loginUser, getUserById } from "./auth.service.js";
 
 const register = async (req, res, next) => {
   try {
-    const { email, password } = req.body ?? {};
-    const user = await registerUser({ email, password });
+   const { name, email, password } = req.body ?? {};
+const user = await registerUser({ name, email, password });
     res.status(201).json({ message: "User registered", user });
   } catch (error) {
     next(error);
